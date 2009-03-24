@@ -47,6 +47,10 @@ j() {
  # if we hit enter on a completion just go there (ugh, this is ugly)
  elif [[ "$*" =~ "/" ]]; then
   local x=$*; x=/${x#*/}; [ -d "$x" ] && cd "$x"
+  local title="${1}"
+  title=${title%/} # remove trailing slash
+  title=${title##*/} # remove up to first slash
+  echo -e "\033]2;$title\007" # set_title
  else
   # prefer case sensitive
   local cd=$(awk -v q="$*" -F"|" '
@@ -61,6 +65,10 @@ j() {
     }
    }
   ' $jfile 2>/dev/null | sort -nr | head -n 1 | cut -f 2)
+  local title="${cd}"
+  title=${title%/} # remove trailing slash
+  title=${title##*/} # remove up to first slash
+  echo -e "\033]2;$title\007" # set_title
   [ "$cd" ] && cd "$cd"
  fi
 }
